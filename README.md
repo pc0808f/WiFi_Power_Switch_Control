@@ -1,0 +1,2 @@
+# WiFi_Power_Switch_Control
+這是用來控制IPC電源的控制版
