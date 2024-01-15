@@ -153,8 +153,6 @@ wifi_check_timer.deinit()
 tw_ntp(must=True)
 
 # 取得網路和時間後，開始進入OTA判斷
-
-
 # 檔案名稱
 filename = 'otalist.dat'
 

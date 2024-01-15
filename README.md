@@ -101,4 +101,215 @@ while True:
 ```
 
 
+### MQTT指令
+### 重開小卡 API格式表
+
+#### 定義
+
+在SQL的小卡表中，每張小卡在初始化時會寫入一個token，利用這個token做為mqtt的id
+
+1. 確定設備ID：每個設備都有一個唯一的ID，以確保每個設備都可以被識別和管理。
+2. 安全性：使用安全性協議（如TLS / SSL）以保護設備和資料的安全。
+3. 適當的資料結構：使用結構化資料，如JSON格式，以方便資料的處理和存儲。
+4. 主題（Topic）：
+
+在自動販賣機的營業狀況收集，設計以下TOPIC：
+
+1. cardid/token/status：設備狀態主題。此主題用於通報自動販賣機的狀態，例如：正在運行中，停止運行，庫存不足等。
+2. (無)cardid/token/sales：銷售統計主題。此主題用於收集自動販賣機的銷售統計數據，例如：每個產品的銷售量，銷售總額等。
+3. cardid/token/commands：命令主題。此主題用於向自動販賣機發送命令，例如：開啟或關閉自動販賣機，啟動或停止維護模式等。
+4. cardid/token/commandack：回覆命令主題。此主題用於回覆指令執行結果。
+5. cardid/token/fota：fota主題。此主題用於要求小卡執行更新動作。
+6. (無)cardid/token/getsetting：取得娃娃機參數。
+
+## 細部內容
+
+cardid/token/status
+
+pub:card
+
+sub:serv
+
+content
+
+```json
+{
+"status":"error code",
+"mode":"on" or "off"
+"time":15XXXX000
+}
+```
+
+cardid/token/commands
+pub:serv
+sub:card
+content
+
+```json
+{
+"commands":"cmd code",
+"parameter1":"",   //預留
+"parameter2":"",   //預留
+"parameter3":"",   //預留
+“time”:15XXXX000
+}
+```
+
+cardid/token/commandack
+
+pub:card
+sub:serv
+content
+
+```json
+{
+"ack":"ack code",
+"parameter1":"",   //預留
+"parameter2":"",   //預留
+"parameter3":"",   //預留
+"time":15XXXX000
+}
+```
+
+‘
+
+cardid/token/fota
+pub:serv
+sub:card
+content
+
+```json
+{
+  "file_list": "otatest1.py, otatest2.py, Data_Collection_Main_0525v4RX_task.py",
+  "password": "90eef838-9b5b-47ae-9111-b2b1063376a9",
+  "time": 15000
+}
+```
+
+測試用指令
+
+**ping-pong**
+cardid/token/commands
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/commands
+
+```json
+{
+"commands":"ping",
+"time":15000
+}
+```
+
+回覆
+
+cardid/token/commandack
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/commandack
+{"commands":"ping",
+"time":15000
+}
+
+```json
+{
+"ack":"pong",
+"time":15XXXX000
+}
+```
+
+**要求狀態**
+
+cardid/token/commands
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/commands
+
+```json
+{
+"commands":"getstatus",
+"time":15XXXX000
+}
+```
+
+回覆
+
+cardid/token/status
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/status
+content
+
+```json
+{
+"status":"error code",
+"mode":"on" or "off"
+"time":15XXXX000
+}
+```
+
+打開IPC
+cardid/token/commands
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/commands
+
+```json
+{
+"commands":"on",
+"state":"UUID"
+"time":15XXXX000
+}
+```
+
+回覆
+cardid/token/commandsack
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/status
+
+content
+
+```json
+{
+"ack":"on",
+"state":"UUID"
+"time":15XXXX000
+}
+```
+
+關閉IPC
+cardid/token/commands
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/commands
+
+```json
+{
+"commands":"off",
+"state":"UUID"
+"time":15XXXX000
+}
+```
+
+回覆
+
+cardid/token/commandsack
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/status
+
+content
+
+```json
+{
+"ack":"off",
+"state":"UUID"
+"time":15XXXX000
+}
+```
+
+重開IPC，關3秒，再打開IPC
+
+cardid/token/commands
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/commands
+
+```json
+{
+"commands":"restart",
+"state":"UUID"
+"time":15XXXX000
+}
+```
+
+回覆
+
+cardid/token/commandsack
+11223344556677/9E53A146-6335-4FD3-82EA-37B6C423EFD3/status
+
+content
 
