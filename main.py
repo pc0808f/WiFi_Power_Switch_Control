@@ -9,6 +9,11 @@ from machine import WDT
 import ntptime
 import os
 
+try:
+    import usocket as socket
+except:
+    import socket
+
 # 定義IO口
 IO_SW1_PIN = 0   # 輕觸按鍵
 IO_5V_EN_PIN = 16  # 控制5V輸出的IO
@@ -97,7 +102,52 @@ def tw_ntp(host='clock.stdtime.gov.tw', must=False):
       return True
   return False
 
+def UDP_Load_Wifi():
+    global led_color
+    # Connect to Wi-Fi
+    wifi_ssid = "Sam"
+    wifi_password = "0928666624"
 
+    station = network.WLAN(network.STA_IF)
+    station.active(True)
+    station.connect(wifi_ssid, wifi_password)
+
+    led_timer.deinit()
+    led_color=2
+    led_timer.init(period=500, mode=Timer.PERIODIC, callback=toggle_led)
+
+    while not station.isconnected():
+        pass
+
+
+
+    print("Connected to Wi-Fi")
+    print('\nConnected. Network config: ', station.ifconfig())
+
+    # Set up UDP socket
+    udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_socket.bind(("0.0.0.0", 1234))
+
+    print("Listening for UDP messages on port 1234")
+
+    while True:
+        data, addr = udp_socket.recvfrom(1024)
+        print("Received message: {}".format(data.decode('utf-8')))
+
+        with open('wifi.dat', "w") as f:
+            f.write(data.decode('utf-8'))
+
+
+        # 連接成功，綠色常亮
+        np[0]=rainbow_colors[2]
+        np.write()
+
+        # 停止 LED 閃爍定時器
+        led_timer.deinit()
+            
+        sleep(3)
+        
+        machine.reset()
 
 
 # 設置 LED 閃爍定時器
@@ -110,14 +160,19 @@ led_timer.init(period=500, mode=Timer.PERIODIC, callback=toggle_led)
 profiles = wifimgr.read_profiles()
 
 # Wi-Fi 連接
+
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 if not wlan.isconnected():
+    # 判斷wifi是否在connecting，如果是，就不要再連接了
+    if wlan.status() == network.STAT_CONNECTING:
+        # 就不要再連接了
+        wlan.disconnect()
     wlan.connect(profiles["name"], profiles[profiles["name"]])
-    
-sleep(3)
 
-wdt=WDT(timeout=1000*60*5) 
+# 印出連接中的訊息，印出SSID
+print("連接中...")
+print(profiles["name"])
 
 
 # 設置檢查 Wi-Fi 連接定時器
@@ -132,17 +187,27 @@ while not wifi_connected:
     else:
         reset_timer = 0
 
-    if reset_timer >= 5:  # 按鍵長按超過 5 秒
+    if reset_timer >= 50:  # 按鍵長按超過 5 秒
         print("進入 WiFi 重置模式")
         wlan.disconnect()
-        wlan.active(False)
+        UDP_Load_Wifi()
         break
 
     time.sleep(0.1)  # 小睡 0.1 秒以減少 CPU 負擔
 
 print("wifi OK")
+
+# 暫停 3 秒，讓使用者有時間中斷程式
+sleep(3)
+
+# 打開WDT，週期5分鐘
+print("打開WDT，週期5分鐘")
+wdt=WDT(timeout=1000*60*5) 
+
+# 連接成功，綠色常亮
 np[0]=rainbow_colors[3]
 np.write()
+
 # 停止 LED 閃爍定時器
 led_timer.deinit()
 
@@ -159,7 +224,9 @@ filename = 'otalist.dat'
 # 取得目錄下的所有檔案和資料夾
 file_list = os.listdir()
 
+# 印出所有檔案和資料夾清單
 print(file_list)
+
 # 檢查檔案是否存在
 if filename in file_list:
     # 在這邊要做讀取OTA列表，然後進行OTA的執行
@@ -203,6 +270,9 @@ else:
 
 
 print("ESP OTA OK")
+
+print("執行Power_Switch_Main.py...")
+execfile('Power_Switch_Main.py')
 
 while True:
     try:

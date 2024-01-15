@@ -235,7 +235,7 @@ content
 ```json
 {
 "status":"error code",
-"mode":"on" or "off"
+"mode":"on" or "off",
 "time":15XXXX000
 }
 ```
@@ -247,7 +247,7 @@ cardid/token/commands
 ```json
 {
 "commands":"on",
-"state":"UUID"
+"state":"UUID",
 "time":15XXXX000
 }
 ```
@@ -261,7 +261,7 @@ content
 ```json
 {
 "ack":"on",
-"state":"UUID"
+"state":"UUID",
 "time":15XXXX000
 }
 ```
@@ -273,7 +273,7 @@ cardid/token/commands
 ```json
 {
 "commands":"off",
-"state":"UUID"
+"state":"UUID",
 "time":15XXXX000
 }
 ```
@@ -288,7 +288,7 @@ content
 ```json
 {
 "ack":"off",
-"state":"UUID"
+"state":"UUID",
 "time":15XXXX000
 }
 ```
@@ -301,7 +301,8 @@ cardid/token/commands
 ```json
 {
 "commands":"restart",
-"state":"UUID"
+"state":"UUID",
+"seconds": 3,
 "time":15XXXX000
 }
 ```
