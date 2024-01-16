@@ -8,6 +8,7 @@ import wifimgr
 from machine import WDT
 import ntptime
 import os
+import binascii
 
 try:
     import usocket as socket
@@ -169,6 +170,9 @@ led_timer.init(period=500, mode=Timer.PERIODIC, callback=toggle_led)
 profiles = wifimgr.read_profiles()
 
 # Wi-Fi 連接
+unique_id_hex = binascii.hexlify(machine.unique_id()[-3:]).decode().upper()
+
+DHCP_NAME = "Happy_" + unique_id_hex
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -177,6 +181,7 @@ if not wlan.isconnected():
     if wlan.status() == network.STAT_CONNECTING:
         # 就不要再連接了
         wlan.disconnect()
+    wlan_sta.config(dhcp_hostname=DHCP_NAME)
     wlan.connect(profiles["name"], profiles[profiles["name"]])
 
 # 印出連接中的訊息，印出SSID
