@@ -1,4 +1,4 @@
-﻿VERSION = "V1.00a"
+﻿VERSION = "V1.00b"
 
 
 import machine
