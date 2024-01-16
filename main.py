@@ -278,7 +278,7 @@ if filename in file_list:
                print("Updated error! Rebooting...")
 
     except Exception as e:
-      print("Updated error!放棄...",e)
+      print("Updated error!錯誤是...",e)
     os.remove(filename)
 else:
     print("OTA檔案不存在")
