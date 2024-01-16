@@ -1,3 +1,4 @@
+from re import I
 from machine import Pin, Timer
 import machine
 import neopixel
@@ -173,7 +174,7 @@ profiles = wifimgr.read_profiles()
 # Wi-Fi 連接
 unique_id_hex = binascii.hexlify(machine.unique_id()[-3:]).decode().upper()
 
-DHCP_NAME = "Happy_" + unique_id_hex
+DHCP_NAME = "Power_" + unique_id_hex
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -268,18 +269,24 @@ if filename in file_list:
             files=file_list
         )
 
-        # 這邊要做OTA的執行，如果置成功，就會進行重啟，如果失敗，就要重新執行
-        while True:
-            if OTA.update():
-                print("Updated to the latest version! Rebooting...")
-                os.remove(filename)
-                machine.reset()
-            else:
-               print("Updated error! Rebooting...")
-
+        # 用OTA.fetch()取得是否有最新版本。有才更新。
+        if OTA.fetch():
+            print("New version available!")
+            # 這邊要做OTA的執行，如果置成功，就會進行重啟，如果失敗，就要重新執行
+            while True:
+                result=OTA.update()
+                if result:
+                    print("Updated to the latest version! Rebooting...")
+                    os.remove(filename)
+                    machine.reset()
+                else:
+                    print("Updated error! Rebooting...",result)
+        else:
+            print("No new version available! Keep OTAlist")
     except Exception as e:
-      print("Updated error!錯誤是...",e)
-    os.remove(filename)
+        print("Updated error!錯誤是...",e)
+        os.remove(filename)
+
 else:
     print("OTA檔案不存在")
 
