@@ -455,12 +455,17 @@ def UDP_Load_Wifi():
     wifi_ssid = "Sam"
     wifi_password = "0928666624"
 
+    unique_id_hex = binascii.hexlify(machine.unique_id()[-3:]).decode().upper()
+
+    DHCP_NAME = "Power_" + unique_id_hex
+
     station = network.WLAN(network.STA_IF)
     station.active(True)
     # 判斷是否已經連上WiFi
     if station.isconnected():
         station.disconnect()
-    
+        
+    station.config(dhcp_hostname=DHCP_NAME)
     station.connect(wifi_ssid, wifi_password)
 
     led_timer.deinit()

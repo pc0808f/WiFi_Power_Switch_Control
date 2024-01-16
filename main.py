@@ -1,4 +1,3 @@
-
 from machine import Pin, Timer
 import machine
 import neopixel
@@ -106,7 +105,7 @@ def tw_ntp(host='clock.stdtime.gov.tw', must=False):
   return False
 
 def UDP_Load_Wifi():
-    global led_color
+    global led_color. DHCP_NAME
     # Connect to Wi-Fi
     wifi_ssid = "Sam"
     wifi_password = "0928666624"
@@ -118,6 +117,7 @@ def UDP_Load_Wifi():
     if station.isconnected():
         station.disconnect()
         
+    station.config(dhcp_hostname=DHCP_NAME)
     station.connect(wifi_ssid, wifi_password)
 
     led_timer.deinit()
