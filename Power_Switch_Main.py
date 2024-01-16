@@ -14,7 +14,7 @@ import gc
 
 from machine import WDT
 
-#Based on 2024/1/15_V1.00f, Sam
+#Based on 2024/1/15_V1.00a, Sam
 
 # 定義狀態類型
 class MainStatus:
