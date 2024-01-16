@@ -105,7 +105,7 @@ def tw_ntp(host='clock.stdtime.gov.tw', must=False):
   return False
 
 def UDP_Load_Wifi():
-    global led_color. DHCP_NAME
+    global led_color, DHCP_NAME
     # Connect to Wi-Fi
     wifi_ssid = "Sam"
     wifi_password = "0928666624"
