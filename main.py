@@ -181,7 +181,7 @@ if not wlan.isconnected():
     if wlan.status() == network.STAT_CONNECTING:
         # 就不要再連接了
         wlan.disconnect()
-    wlan_sta.config(dhcp_hostname=DHCP_NAME)
+    wlan.config(dhcp_hostname=DHCP_NAME)
     wlan.connect(profiles["name"], profiles[profiles["name"]])
 
 # 印出連接中的訊息，印出SSID
@@ -276,12 +276,11 @@ if filename in file_list:
             else:
                print("Updated error! Rebooting...")
 
-    except:
-      print("Updated error! Rebooting...")
+    except Exception as e:
+      print("Updated error!放棄...",e)
     os.remove(filename)
 else:
     print("OTA檔案不存在")
-
 
 print("ESP OTA OK")
 
