@@ -9,6 +9,7 @@ from machine import WDT
 import ntptime
 import os
 import binascii
+import senko
 
 try:
     import usocket as socket
