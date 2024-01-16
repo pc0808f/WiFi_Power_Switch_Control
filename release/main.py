@@ -1,4 +1,4 @@
-from re import I
+
 from machine import Pin, Timer
 import machine
 import neopixel
