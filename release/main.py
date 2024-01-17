@@ -297,8 +297,10 @@ execfile('Power_Switch_Main.py')
 
 while True:
     try:
+        
         print("執行Power_Switch_Main.py...")
         execfile('Power_Switch_Main.py')
     except:
         print("執行失敗，改跑Power_Switch_Main.mpy")
         __import__('Power_Switch_Main.mpy')   
+
