@@ -221,7 +221,7 @@ def subscribe_MQTT_claw_recive_callback(topic, message):
         if topic.decode() == (mq_topic + "/fota"):
             otafile = "otalist.dat"
             if ("file_list" in data) and ("password" in data):
-                if data["password"] == "c0b82a2c-4b03-42a5-92cd-3478798b2a90":
+                if data["password"] == "90eef838-9b5b-47ae-9111-b2b1063376a9":  # 2021/1/17 Sam 更正密碼
                     # print("password checked")
                     publish_MQTT_card_data(card_1, "fotaack", data["state"])
                     with open(otafile, "w") as f:
