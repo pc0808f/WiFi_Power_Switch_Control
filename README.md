@@ -178,7 +178,7 @@ powerID/cardid/token/fota
 pub:serv  
 sub:card  
 
-#####　content說明  
+##### content說明  
 file_list要更新的列表 ex: "otatest1.py, otatest2.py"  
 password : 專用密碼  
 time : 時間  
@@ -199,7 +199,7 @@ powerID/cardid/token/fotaack
 pub:card  
 sub:serv  
 
-#####　content說明  
+##### content說明  
 ack: "OK"  OK表接受  
 time : 卡片上的時間  
 state : 代表本次通訊的必token, 回傳同token表示同指令  
