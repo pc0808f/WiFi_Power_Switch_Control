@@ -115,21 +115,22 @@ while True:
 
 在自動販賣機的營業狀況收集，設計以下TOPIC：
 
-1. cardid/token/status：設備狀態主題。此主題用於通報自動販賣機的狀態，例如：正在運行中，停止運行，庫存不足等。
-2. (無)cardid/token/sales：銷售統計主題。此主題用於收集自動販賣機的銷售統計數據，例如：每個產品的銷售量，銷售總額等。
-3. cardid/token/commands：命令主題。此主題用於向自動販賣機發送命令，例如：開啟或關閉自動販賣機，啟動或停止維護模式等。
-4. cardid/token/commandack：回覆命令主題。此主題用於回覆指令執行結果。
-5. cardid/token/fota：fota主題。此主題用於要求小卡執行更新動作。
-6. (無)cardid/token/getsetting：取得娃娃機參數。
+電源小卡專用 16byte powerID: 03ac6a6316d8fd2c7401249b6ca30a06 
+
+1. powerID/cardid/token/status：設備狀態主題。此主題用於通報自動販賣機的狀態，例如：正在運行中，停止運行，庫存不足等。
+2. ~~(無使用)cardid/token/sales：銷售統計主題。此主題用於收集自動販賣機的銷售統計數據，例如：每個產品的銷售量，銷售總額等。~~
+3. powerID/cardid/token/commands：命令主題。此主題用於向自動販賣機發送命令，例如：開啟或關閉自動販賣機，啟動或停止維護模式等。
+4. powerID/cardid/token/commandack：回覆命令主題。此主題用於回覆指令執行結果。
+5. powerID/cardid/token/fota：fota主題。此主題用於要求小卡執行更新動作。
+6. ~~(無使用)cardid/token/getsetting：取得娃娃機參數。~~
+
+
 
 ## 細部內容
 
 cardid/token/status
-
 pub:card
-
 sub:serv
-
 content
 
 ```json
@@ -171,20 +172,51 @@ content
 }
 ```
 
-‘
-
-cardid/token/fota
+### Fota 使用說明:要求
+powerID/cardid/token/fota
 pub:serv
 sub:card
-content
+#####　content說明
+file_list要更新的列表 ex: "otatest1.py, otatest2.py"
+password : 專用密碼
+time : 時間
+state : 代表本次通訊的必token, 回傳同token表示同指令
 
 ```json
 {
   "file_list": "otatest1.py, otatest2.py, Data_Collection_Main_0525v4RX_task.py",
   "password": "90eef838-9b5b-47ae-9111-b2b1063376a9",
+  "state" : "21f27b7f-d741-414e-8fc3-bcee395463f6",
   "time": 15000
 }
 ```
+
+        mq_topic = (
+            "03ac6a6316d8fd2c7401249b6ca30a06/" + macid + "/" + token + "/fotaack"
+        )
+        if para1 == "":
+            MQTT_card_data = {"ack": "OK", "time": utime.time()}
+        else:
+            MQTT_card_data = {"ack": "OK", "state": para1, "time": utime.time()}
+
+### Fota 使用說明:回應
+powerID/cardid/token/fotaack
+pub:card
+sub:serv
+#####　content說明
+ack: "OK"  OK表接受
+time : 卡片上的時間
+state : 代表本次通訊的必token, 回傳同token表示同指令
+
+```json
+{
+  "ack": "OK",
+  "state" : "21f27b7f-d741-414e-8fc3-bcee395463f6",
+  "time": 15000
+}
+```
+
+       
 
 測試用指令
 
