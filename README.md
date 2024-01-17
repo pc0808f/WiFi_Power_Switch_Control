@@ -171,7 +171,7 @@ content
 "time":15XXXX000
 }
 ```
-
+---
 ### Fota 使用說明:要求
 powerID/cardid/token/fota
 pub:serv
@@ -191,14 +191,6 @@ state : 代表本次通訊的必token, 回傳同token表示同指令
 }
 ```
 
-        mq_topic = (
-            "03ac6a6316d8fd2c7401249b6ca30a06/" + macid + "/" + token + "/fotaack"
-        )
-        if para1 == "":
-            MQTT_card_data = {"ack": "OK", "time": utime.time()}
-        else:
-            MQTT_card_data = {"ack": "OK", "state": para1, "time": utime.time()}
-
 ### Fota 使用說明:回應
 powerID/cardid/token/fotaack
 pub:card
@@ -215,7 +207,7 @@ state : 代表本次通訊的必token, 回傳同token表示同指令
   "time": 15000
 }
 ```
-
+---
        
 
 測試用指令
