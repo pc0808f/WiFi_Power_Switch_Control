@@ -1,5 +1,5 @@
 
-VERSION = "V1.00c"
+VERSION = "V1.00cT"
 
 
 import machine
@@ -15,8 +15,8 @@ import gc
 
 from machine import WDT
 
-# Based on 2024/1/15_V1.00a, Sam
-# 2024/1/17 V1.00c 修正state為空值時的問題, Sam 
+# Based on 2024/1/17_V1.00c, Sam
+# 2025/4/23 V1.00cT 測試版，小卡主動發送MQTT-status的週期從1小時改成3分鐘, Thomas
 
 
 # 定義狀態類型
@@ -392,7 +392,7 @@ def publish_MQTT_card_data(
     publish_data(mq_client_1, mq_topic, mq_json_str)
 
 
-server_report_sales_period = 60 * 60  # 3分鐘 = 3*60 單位秒
+server_report_sales_period = 3 * 60  # 3分鐘 = 3*60 單位秒
 # server_report_sales_period = 10   # For快速測試
 server_report_sales_counter = 0  # -1代表第一次執行就要執行，0代表第一次執行不要執行
 
